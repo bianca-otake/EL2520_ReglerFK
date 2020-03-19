@@ -15,11 +15,12 @@ gamma = 1;
 tauD = 1;
 tauI = 1;
 % lead-lag link
-F = K*(tauD*s + 1)/(beta*tauD*s + 1)*(tauI*s + 1)/(tauI*s + gamma);
+Flead = K*(tauD*s + 1)/(beta*tauD*s + 1);
+Flag = (tauI*s + 1)/(tauI*s + gamma);
 
-L = F*G;
+L = Flead*Flag*G;
 
 S = feedback(1,L)
 T = feedback(L,1)
 
-[m,p] = bode(G,0.4) %% vi vill att detta ska returnera 1 och 30 deg = 0.5235987756 rad
+[m,p] = bode(G*F,0.4) %% vi vill att detta ska returnera 1 och 30 deg = 0.5235987756 rad
