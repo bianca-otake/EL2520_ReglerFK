@@ -22,4 +22,4 @@ L = F*G;
 S = feedback(1,L)
 T = feedback(L,1)
 
-
+[m,p] = bode(G,0.4) %% vi vill att detta ska returnera 1 och 30 deg = 0.5235987756 rad
