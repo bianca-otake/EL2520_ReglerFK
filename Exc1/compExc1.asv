@@ -10,16 +10,11 @@ G = 3*(1-s)/((5*s + 1)*(10*s+1));
 
 % Lead-lag parameters
 K = 1;
-beta  = 1;
-gamma = 1;
+beta  = 0;
+gamma = 0;
 tauD = 1;
-tauI = 1;
+tauI = 0;
 % lead-lag link
-F = K*(tauD*s + 1)/(beta*tauD*s + 1)*(tauI*s + 1)/(tauI*s + gamma);
-
-L = F*G;
-
-S = feedback(1,L)
-T = feedback(L,1)
+F = 
 
 
