@@ -62,22 +62,34 @@ figure(8); step(Fy2*G/(1+Fy*G))
 
 figure(8); step(Fy2*G/(1+Fy*G))
 
-%%
 
+%% q 4.2.3
+
+% first add lead action to F_y to reduce overshoot
 wi = 6; 
 p1 = 100 * wc; 
 Fy = (s + wi)/s*1/G*Gd;
 Fy2 = Fy /((s+p1)^2)*p1^2;
 
-Beta = 0.4903;
-Tau_d =0.0896;
-K = 1.0517;
-lead = K *(Tau_d * s + 1) / ( Beta * Tau_d  * s +1); 
+% How do we tune these paramters!?
+Beta = 0.5;
+Tau_d =0.09;
+K = 1.05;
+lead = K * (Tau_d * s + 1) / ( Beta * Tau_d  * s +1); 
 
+% check if Fy3 reduces overshoot: 
 Fy3 = Fy2 * lead;
-figure;
+closed_2 = 1/(1+Fy2*G)*Fy2*G;
+closed_3 = 1/(1+Fy3*G)*Fy3*G;
+hold on
+step(closed_2);
+step(closed_3);
+legend('without lead-link','with lead-link')
+grid on 
+hold off
+stepinfo(closed_3)
 
-step(1/(1+Fy3*G)*Fy3*G)
+% design Fr: 
 
-legend('Fy2','Fy3')
-grid on
+Tau = 0; 
+Fr = 1 / (1 + Tau * s); 
