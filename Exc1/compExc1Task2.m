@@ -87,9 +87,9 @@ step(closed_3);
 legend('without lead-link','with lead-link')
 grid on 
 hold off
-stepinfo(closed_3)
+stepinfo(closed_3) % overshoot is < 10%!
 
-% design Fr: 
+% design Fr: WIP
 
 Tau = 0; 
 Fr = 1 / (1 + Tau * s); 
