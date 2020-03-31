@@ -11,22 +11,23 @@ wc = 9.95; % rad/s avlest fran bode av G
 
 Fy = 1/G*wc/s;
 
-p0 = 100*wc;
-p1 = 1000*wc;
+p10     = 10*wc;
+p100    = 100*wc;
+p1000   = 1000*wc;
 
-Fy0 = p0*p0*Fy/((s+p0)^2);
-Fy1 = p1*p1*Fy/((s+p1)^2);
+Fy0 = p10*p10*Fy/((s+p10)^2);
+Fy1 = p100*p100*Fy/((s+p100)^2);
+Fy2 = p1000*p1000*Fy/((s+p1000)^2);
 
-
-figure; bode(Fy*G,Fy0*G,Fy1*G); grid on; 
-legend('Improper','p = 100 \omegac','p = 1000 \omegac'); 
+figure(1); bode(Fy*G,Fy0*G,Fy1*G,Fy2*G); grid on; 
+legend('Improper','p = 10 \omegac','p = 100 \omegac', 'p = 1000 \omegac'); 
 lines = findobj(gcf,'Type','Line');
 for i = 1:numel(lines)
   lines(i).LineWidth = 2.0;
 end
 
-figure(3); step(1/(1+Fy*G)*Gd, 1/(1+Fy0*G)*Gd,1/(1+Fy1*G)*Gd);
-legend('Improper','p = 100 \omegac','p = 1000 \omegac'); 
+figure(3); step(1/(1+Fy*G)*Gd, 1/(1+Fy0*G)*Gd , 1/(1+Fy1*G)*G);
+legend('Improper','p = 10 \omegac','p = 100 \omegac'); 
 lines = findobj(gcf,'Type','Line');
 for i = 1:numel(lines)
   lines(i).LineWidth = 2.0;
@@ -67,20 +68,27 @@ figure(8); step(Fy2*G/(1+Fy*G))
 
 % first add lead action to F_y to reduce overshoot
 wi = 6; 
-p1 = 100 * wc; 
+p1 = 10 * wc; 
 Fy = (s + wi)/s*1/G*Gd;
 Fy2 = Fy /((s+p1)^2)*p1^2;
 
 % How do we tune these paramters!?
-Beta = 0.5;
-Tau_d =0.09;
-K = 1.05;
-lead = K * (Tau_d * s + 1) / ( Beta * Tau_d  * s +1); 
+wc = 10
+% desired wc = 1 rad/s
+[m,p] =bode(Fy2*G,wc)
+K1 = 1/m
+% figure; bode(Fy2*G*K1)
+Beta = 0.4903;
+Tau_d = 1/(wc*sqrt(Beta));
+% K1 = 1.0517
+
+lead = K1 * (Tau_d * s + 1) / ( Beta * Tau_d  * s +1); 
 
 % check if Fy3 reduces overshoot: 
 Fy3 = Fy2 * lead;
 closed_2 = 1/(1+Fy2*G)*Fy2*G;
 closed_3 = 1/(1+Fy3*G)*Fy3*G;
+figure(9);clf
 hold on
 step(closed_2);
 step(closed_3);
@@ -89,7 +97,41 @@ grid on
 hold off
 stepinfo(closed_3) % overshoot is < 10%!
 
+% Designing Fr filter
 % design Fr: WIP
-
-Tau = 0; 
+L = Fy3*G;
+S = 1/(1 + L);
+T = L/(1+L);
+Tau = 0.5; 
 Fr = 1 / (1 + Tau * s); 
+
+figure(3); clf; hold on; 
+step(Fy3*Fr*S); step(Fy3*Gd*S); step(Fy3*Fr*S-Fy3*Gd*S)
+title('Magnitude of u signals')
+
+%% Checking _ALL_ coonditions!!!!!!!!!!!!!!!!!!!!!!!!!
+figure(11);
+subplot(1,3,1); step(closed_3); title('step r -> y'); grid on
+subplot(1,3,2); step(1/(1+Fy*G)*Gd); grid on; title('step d -> y')
+subplot(1,3,3); hold on; 
+step(Fy3*Fr*S); step(Fy3*Gd*S); step(Fy3*Fr*S-Fy3*Gd*S);legend('Fr*Fy*S','Fy*Gd*S','Fr*Fy*S-Fy*Gd*S'); grid on
+title('|u|')
+
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 1.5;
+end
+
+figure(12);
+subplot(1,2,1);
+bodemag(S); title('S(i\omega)'); grid on
+subplot(1,2,2);
+bodemag(T); title('T(i\omega)'); grid on
+
+
+
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 1.5;
+end
+
