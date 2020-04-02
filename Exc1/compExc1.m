@@ -60,9 +60,9 @@ figure; bode(T)
 
 % The phase margin should be 30deg at the cross-over frequency wc = 0.4 rad/s.
 
-[m,p] = bode(G,0.4); %% vi vill att detta ska returnera 1 och 30 deg = 0.5235987756 rad
+[m,p] = bode(G,0.195); %% vi vill att detta ska returnera 1 och 30 deg = 0.5235987756 rad
 
-wc = 0.4;
+wc = 0.195;
 K0 = 1/m;
 
 % Lead-lag parameters
