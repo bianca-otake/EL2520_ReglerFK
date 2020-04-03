@@ -10,15 +10,15 @@ mp_min = minreal(mp);
 nonmp = nonminphase;
 nonmp_min = minreal(nonmp);
 
-G_mp = minreal(mp.C*inv((eye/4)*s-mp.A)*mp.B);
+G_mp = minreal(mp.C*inv(eye(4)*s-mp.A)*mp.B)
 
 %% 3.1.1 Calculate the transfer matrix G(s). Investigate each element of the
 % matrix (Hint: G(1,1) extracts element (1,1)). Calculate the poles and zeros of the
 % elements.
-poles = [pole(G_mp(1,1)) pole(G_mp(1,2)) ; pole(G_mp(2,1)) pole(G_mp(2,2))] % poles
-zeros = [tzero(G_mp(1,1)) tzero(G_mp(1,2)) ; tzero(G_mp(2,1)) tzero(G_mp(2,2))] % zeros
+poles = [pole(G_mp(1,1)); pole(G_mp(1,2)) ; pole(G_mp(2,1)); pole(G_mp(2,2))] % poles
+zeros = [tzero(G_mp(1,1)); tzero(G_mp(1,2)) ; tzero(G_mp(2,1)); tzero(G_mp(2,2))] % zeros
 
-% observe zeros in RHP! --> unstable with återkoppling?
+% 
 
 %% 3.1.2 Calculate the poles and zeros of the multivariable system. Do these
 % imply any constraint on the achievable control performance?
@@ -28,19 +28,22 @@ sysPoles = pole(G_mp)
 sysZeros = tzero(G_mp)
 
 % But here all zeros and poles are in LHP --> stable! interesting.
-% i.e. we do not have any constraints on ctrl-performance? Feedbackk
-% welcome :)
+% Also same poles as in 3.1.1 which feels reassuring
+
 %% 3.1.3 Investigate the largest and smallest singular values for the system
 % at different frequencies. Calculate the H-inf norm of the system.
+
 figure(1); clf; sigma(G_mp);
-hinfvalue = hinfnorm(mp_min); % note different scales but the values
+hinfvalue = hinfnorm(mp_min); % different scales but the values are the same
 
 
 %% testing: shouldnt a_test1 == a_test_2 ????
 
 a_test1 = mp.A;
-[a_test2 B C D] = ssdata(G_mp);
-a_test2;
+[A B C D] = ssdata(G_mp);
+A; % tänker att de inte nödändigtvis behöver vara samma i och med att man kan
+% välja olika state space representations beroende på vilken form man vill
+% ha det på men är inte säker....
 
 [num,den] = tfdata(G_mp);  % useful, maybe?
 
