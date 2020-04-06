@@ -8,7 +8,7 @@ mp = minphase;
 mp_min = minreal(mp);
 
 nonmp = nonminphase;
-nonmp_min = minreal(nonmp);
+nonmp_min = (nonmp);
 
 
 
@@ -45,7 +45,7 @@ sysZeros_nonmin = tzero(G_nonmp)
 % at different frequencies. Calculate the H-inf norm of the system.
 
 figure(1); clf; sigma(G_mp);
-hinfvalue = hinfnorm(mp_min); % different scales but the values are the same
+% hinfvalue = hinfnorm(mp_min); % different scales but the values are the same
 
 
 %% testing: shouldnt a_test1 == a_test_2 ????
@@ -61,44 +61,22 @@ A; % tänker att de inte nödändigtvis behöver vara samma i och med att man kan
 %% 3.1.4: Investigate the RGA of the system at frequency 0. What conclusions
 % can we draw about the possibility of using decentralized control? 
 
-bodeopts = bodeoptions();
-bodeopts.MagUnits = 'abs';
-
+% minphase
 RGA = G_mp .* inv(G_mp)';
-h = figure(4); clf
-subplot(1,2,1);
-bodemag(RGA(1,1),'r',RGA(1,2),RGA(2,1),'k--',RGA(2,2),'y--');
-lines = findobj(gcf,'Type','Line');
-for i = 1:numel(lines)
-  lines(i).LineWidth = 1.5;
-end
-hold on; bodemag(tf(3),'k--'); bodemag(tf(0.5),'k--'); legend('RGA(1,1)','RGA(1,2)','RGA(2,1)','RGA(2,2)','suitable range')
-grid on;
-% as all of the RGA(i,j)(0) > 0 we can use decentralized control. Negative
-% values would switch sign of the gain which would have been very bad but
-% as we don't it's ok!
-% RGA(1,1) and RGA(2,2) always within suitable pairing range, 
-% diagonal elements only suitable for pairing during low frequencies
-title('RGA of minphase')
-subplot(1,2,2); % non-minphase
+% diagonal pairing suitable
+evalfr(RGA,0)
+
+% non-minphase
 
 RGA_nonmin = G_nonmp .* inv(G_nonmp)';
-bodemag(RGA_nonmin(1,1),'r',RGA_nonmin(1,2),RGA_nonmin(2,1),'k--',RGA_nonmin(2,2),'y--');
-% bodemag(RGA)    
-lines = findobj(gcf,'Type','Line');
-for i = 1:numel(lines)
-  lines(i).LineWidth = 1.5;
-end
-hold on; bodemag(tf(3),'k--'); bodemag(tf(0.5),'k--'); legend('RGA(1,1)','RGA(1,2)','RGA(2,1)','RGA(2,2)','suitable range')
-grid on;
-
-title('RGA of non-minphase')
+evalfr(RGA_nonmin,0)
+% off-diagonal pairing suitable
 
 %% 3.1.5 Plot the step response for one input at the time. Investigate the
 % outputs: Is the system coupled? Is this in line with the properties of RGA?
 figure(5); clf;
 subplot(1,2,1);
-step(G_mp(1,1),'r',G_mp(1,2),G_mp(2,1),'k--',G_mp(2,2),'y--'); legend('G_mp(1,1)','G_mp(1,2)','G_mp(2,1)','G_mp(2,2)')
+step(G_mp);% legend('G_mp(1,1)','G_mp(1,2)','G_mp(2,1)','G_mp(2,2)')
 grid on; title('Step response minphase system')
 % it seems like the diagonal elements are copuled and the anti-diagonal
 % elements are cupled as the have similar responses. The bodemag(RGA(i,j)) 
@@ -106,8 +84,7 @@ grid on; title('Step response minphase system')
 % values
 
 subplot(1,2,2); %nonminphase
-(step(G_nonmp(1,1),'r',G_nonmp(1,2),G_nonmp(2,1),'k--',G_nonmp(2,2),'y--'));
-legend('G_nonmp(1,1)','G_nonmp(1,2)','G_nonmp(2,1)','G_nonmp(2,2)')
+step(G_nonmp);
 grid on; title('Step Response non-minphase system')
 
 %
@@ -115,6 +92,9 @@ grid on; title('Step Response non-minphase system')
 % discuss how it affects the control performance.
 
 
-
-
+%% Exercise 3.2.1. Design a decentralized controller by pairing inputs and outputs according
+% to the RGA analysis. The intended phase margin is 'm =pi/3 and the crossover
+% frequency wc is 0.1 rad/s for the minimum phase case and 0.02 rad/s for the
+% non-minimum phase case. (To make sure that the problem is correctly solved, investigate
+% the Bode diagram of L.)
 
