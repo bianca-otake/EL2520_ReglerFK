@@ -91,10 +91,66 @@ grid on; title('Step Response non-minphase system')
 %% 3.1.6. Describe the most important differences between the two cases and
 % discuss how it affects the control performance.
 
+% the coupling changes!
 
 %% Exercise 3.2.1. Design a decentralized controller by pairing inputs and outputs according
-% to the RGA analysis. The intended phase margin is 'm =pi/3 and the crossover
+% to the RGA analysis. The intended phase margin is phi_m =pi/3 = 60 deg and the crossover
 % frequency wc is 0.1 rad/s for the minimum phase case and 0.02 rad/s for the
 % non-minimum phase case. (To make sure that the problem is correctly solved, investigate
 % the Bode diagram of L.)
+
+wc = 0.1; phi_m = 60;
+
+
+K1 = 1;
+T1 = 1;
+f1 = K1*(1+1/(s*T1));
+% we want |g11(iwc)f1(iwc)| = 1
+% and 
+% arg g11(iwc) + arctan(wc*Ti1) ? pi/2 ? phim = ?pi
+
+[m p] = bode(G_mp(1,1),wc);
+
+arctanParameter = -180 + phi_m + 90 - p;
+
+T1 = tand(arctanParameter)/wc;
+
+f1 = K1*(1+1/(s*T1));
+
+[m p] = bode(f1*G_mp(1,1),wc);
+K1 = K1/m; f1 = K1*(1+1/(s*T1));
+figure(31); bode(f1*G_mp(1,1));  grid on
+
+K2 = 1; 
+T2 = 1;
+f2 = K2*(1+1/(s*T2));
+
+[m p] = bode(G_mp(2,2),wc);
+
+arctanParameter = -180 + phi_m + 90 - p;
+
+T2 = tand(arctanParameter)/wc;
+
+f2 = K2*(1+1/(s*T2));
+
+[m p] = bode(f2*G_mp(2,2),wc);
+K2 = K2/m; f2 = K2*(1+1/(s*T2));
+figure(32); bode(f2*G_mp(2,2));  grid on
+
+F = [f1 0; 0 f2];
+
+%% 3.2.3
+
+figure(33); clf;
+S = inv(eye(2) + G_mp*F);
+sigma(S);
+hold on
+T = inv(eye(2) + G_mp*F)*G_mp*F
+sigma(T)
+xlim([0.001,10]); grid on; legend()
+
+%% Exercise 3.2.2. Calculate the singular values of the sensitivity function
+% and the complementary sensitivity function. Is the design good with respect
+% to sensitivity and robustness?
+
 
