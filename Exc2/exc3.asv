@@ -98,19 +98,16 @@ title('RGA of non-minphase')
 % outputs: Is the system coupled? Is this in line with the properties of RGA?
 figure(5); clf;
 subplot(1,2,1);
-step(G_mp(1,1),'r',G_mp(1,2),G_mp(2,1),'k--',G_mp(2,2),'y--'); legend('G_mp(1,1)','G_mp(1,2)','G_mp(2,1)','G_mp(2,2)')
-grid on; title('Step response minphase system')
+step(RGA(1,1),'r',RGA(1,2),RGA(2,1),'k--',RGA(2,2),'y--'); legend('RGA(1,1)','RGA(1,2)','RGA(2,1)','RGA(2,2)')
+grid on;
 % it seems like the diagonal elements are copuled and the anti-diagonal
 % elements are cupled as the have similar responses. The bodemag(RGA(i,j)) 
-% of those pairs are also identical. The step response goes to very large
-% values
+% of those pairs are also identical.
 
 subplot(1,2,2); %nonminphase
-(step(G_nonmp(1,1),'r',G_nonmp(1,2),G_nonmp(2,1),'k--',G_nonmp(2,2),'y--'));
-legend('G_nonmp(1,1)','G_nonmp(1,2)','G_nonmp(2,1)','G_nonmp(2,2)')
-grid on; title('Step Response non-minphase system')
-
-%
+semilogy(step(RGA_nonmin(1,1),'r',RGA_nonmin(1,2),RGA_nonmin(2,1),'k--',RGA_nonmin(2,2),'y--');
+legend('RGA(1,1)','RGA(1,2)','RGA(2,1)','RGA(2,2)')
+grid on;
 %% 3.1.6. Describe the most important differences between the two cases and
 % discuss how it affects the control performance.
 
