@@ -44,9 +44,12 @@ sysZeros_nonmin = tzero(G_nonmp)
 %% 3.1.3 Investigate the largest and smallest singular values for the system
 % at different frequencies. Calculate the H-inf norm of the system.
 
-figure(1); clf; sigma(G_mp);
+figure(1); clf; sigma(G_mp); title('Singular Values Minimum Phase'); grid on
 % hinfvalue = hinfnorm(mp_min); % different scales but the values are the same
-
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 1.0;
+end
 
 %% testing: shouldnt a_test1 == a_test_2 ????
 
@@ -85,8 +88,11 @@ grid on; title('Step response minphase system')
 
 subplot(1,2,2); %nonminphase
 step(G_nonmp);
-grid on; title('Step Response non-minphase system')
-
+grid on; title('Step Response non-minphase system'); legend()
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 2.0;
+end
 %
 %% 3.1.6. Describe the most important differences between the two cases and
 % discuss how it affects the control performance.
@@ -135,20 +141,32 @@ f2 = K2*(1+1/(s*T2));
 
 [m p] = bode(f2*G_mp(2,2),wc);
 K2 = K2/m; f2 = K2*(1+1/(s*T2));
-figure(32); bode(f2*G_mp(2,2));  grid on
+figure(32); bode(f2*G_mp(2,2));  grid on;
 
 F = [f1 0; 0 f2];
 
+figure(321); clf; 
+subplot(1,2,1);  bode(f1*G_mp(1,1)); title('Bode f1*G(1,1)'); grid on
+subplot(1,2,2); bode(f2*G_mp(2,2)); title('Bode f2*G(2,2)')
+grid on;
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 2.0;
+end
 %% 3.2.3
 
 figure(33); clf;
 S = inv(eye(2) + G_mp*F);
 sigma(S);
 hold on
-T = inv(eye(2) + G_mp*F)*G_mp*F
-sigma(T)
-xlim([0.001,10]); grid on; legend()
-
+T = inv(eye(2) + G_mp*F)*G_mp*F;
+sigma(T);
+xlim([0.001,10]); grid on; 
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 2.0;
+end
+legend(); title('Singular Values Minimum Phase System')
 %% Exercise 3.2.2. Calculate the singular values of the sensitivity function
 % and the complementary sensitivity function. Is the design good with respect
 % to sensitivity and robustness?
