@@ -13,6 +13,7 @@ macro
 
 
 
+
 %% 4.2 Robustness 
 % del i: 
 G0 = G * (s-1)/(s+2);
